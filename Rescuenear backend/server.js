@@ -1,12 +1,13 @@
 // server.js
-require('dotenv').config(); // Load local .env if present
+require('dotenv').config(); // Load environment variables
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path');
 
 // Import routes
-const authRoutes = require('./routes');          // adjust if different
-const patientRoutes = require('./routespatients'); // adjust if different
+const authRoutes = require('./routes');          
+const patientRoutes = require('./routespatients'); 
 
 const app = express();
 
@@ -14,20 +15,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Use routes
+// Use API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/patients', patientRoutes);
 
-// Root route (for browser test)
-app.get('/', (req, res) => {
-  res.send('🚀 Rescuenear backend is running!');
-});
-
 // MongoDB connection
 const mongoURI = process.env.MONGO_URI || "mongodb://localhost:27017/rescuenear"; 
-// TEMPORARY fallback: local MongoDB if env var missing
-
-console.log("Mongo URI in use:", mongoURI); // Debug: prints the URI being used
+console.log("Mongo URI in use:", mongoURI);
 
 mongoose.connect(mongoURI, {
     useNewUrlParser: true,
@@ -36,11 +30,16 @@ mongoose.connect(mongoURI, {
 .then(() => console.log("✅ MongoDB connected"))
 .catch((err) => console.error("❌ MongoDB connection error:", err));
 
-// 404 handler for unknown routes
-app.use((req, res) => {
-  res.status(404).send('⚠️ Route not found!');
+// Serve frontend files
+const frontendPath = path.join(__dirname, 'frontend');
+app.use(express.static(frontendPath));
+
+// Serve index.html for all non-API routes
+app.get('*', (req, res) => {
+    res.sendFile(path.join(frontendPath, 'index.html'));
 });
 
 // Port
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
