@@ -1,13 +1,7 @@
 // routes/patients.js
 const express = require('express');
 const router = express.Router();
-const { getPatients, addPatient } = require('../controllers/patientController');
-
-// GET /api/patients
-router.get('/', getPatients);
-
-// POST /api/patients
-router.post('/', addPatient);
-
-module.exports = router;
+const authController = require('./controllersauthcontrollers');
+router.post('/signup', authController.signup);
+// add login, verify OTP routes here module.exports = router;
 
