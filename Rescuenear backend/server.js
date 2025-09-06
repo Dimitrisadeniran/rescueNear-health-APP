@@ -1,9 +1,9 @@
 // server.js
-require('dotenv').config(); // Load environment variables
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const path = require('path');
+const path = require('path'); // Needed to serve frontend
 
 // Import routes
 const authRoutes = require('./routes');          
@@ -15,12 +15,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Use API routes
+// API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/patients', patientRoutes);
 
 // MongoDB connection
-const mongoURI = process.env.MONGO_URI || "mongodb://localhost:27017/rescuenear"; 
+const mongoURI = process.env.MONGO_URI || "mongodb://localhost:27017/rescuenear";
 console.log("Mongo URI in use:", mongoURI);
 
 mongoose.connect(mongoURI, {
@@ -34,7 +34,7 @@ mongoose.connect(mongoURI, {
 const frontendPath = path.join(__dirname, 'frontend');
 app.use(express.static(frontendPath));
 
-// Serve index.html for all non-API routes
+// Send index.html for all non-API routes
 app.get('*', (req, res) => {
     res.sendFile(path.join(frontendPath, 'index.html'));
 });
@@ -42,4 +42,3 @@ app.get('*', (req, res) => {
 // Port
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
-
