@@ -1,21 +1,25 @@
 // controllersauthControllers.js
-const User = require('../modeluser');            // ✅ corrected path
-const sendEmailOTP = require('..UtilssendemailOTP'); // ✅ corrected path
+const User = require('../modeluser');              // ✅ Correct import
+const sendEmailOTP = require('../UtilssendemailOTP'); // ✅ Fixed path
 
 // Signup
 exports.signup = async (req, res) => {
   const { email, phone } = req.body;
-  if (!email || !phone) return res.json({ success: false, message: 'Missing fields' });
+  if (!email || !phone) {
+    return res.json({ success: false, message: 'Missing fields' });
+  }
 
   const exists = await User.findOne({ phone });
-  if (exists) return res.json({ success: false, message: 'Phone already registered' });
+  if (exists) {
+    return res.json({ success: false, message: 'Phone already registered' });
+  }
 
   const otp = Math.floor(1000 + Math.random() * 9000).toString();
   const user = new User({
     email,
     phone,
     otp,
-    otpExpires: new Date(Date.now() + 5 * 60 * 1000),
+    otpExpires: new Date(Date.now() + 5 * 60 * 1000), // 5 mins
   });
   await user.save();
 
@@ -31,10 +35,14 @@ exports.signup = async (req, res) => {
 // Login
 exports.login = async (req, res) => {
   const { phone } = req.body;
-  if (!phone) return res.json({ success: false, message: 'Phone required' });
+  if (!phone) {
+    return res.json({ success: false, message: 'Phone required' });
+  }
 
   const user = await User.findOne({ phone });
-  if (!user) return res.json({ success: false, message: 'User not found' });
+  if (!user) {
+    return res.json({ success: false, message: 'User not found' });
+  }
 
   const otp = Math.floor(1000 + Math.random() * 9000).toString();
   user.otp = otp;
@@ -53,16 +61,20 @@ exports.login = async (req, res) => {
 // Verify OTP
 exports.verify = async (req, res) => {
   const { phone, otp } = req.body;
-  if (!phone || !otp) return res.json({ success: false, message: 'Missing fields' });
+  if (!phone || !otp) {
+    return res.json({ success: false, message: 'Missing fields' });
+  }
 
   const user = await User.findOne({ phone, otp });
-  if (!user) return res.json({ success: false, message: 'Invalid OTP' });
+  if (!user) {
+    return res.json({ success: false, message: 'Invalid OTP' });
+  }
 
   if (user.otpExpires < Date.now()) {
     return res.json({ success: false, message: 'OTP expired' });
   }
 
-  // Clear OTP
+  // Clear OTP after successful verification
   user.otp = null;
   user.otpExpires = null;
   await user.save();
