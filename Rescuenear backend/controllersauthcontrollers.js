@@ -1,5 +1,5 @@
-const User = require('../models/User');
-const sendEmailOTP = require('../utils/sendEmailOTP');
+const User = require('../modeluser');
+const sendEmailOTP = require('../UtilssendemailOTP');
 
 exports.signup = async (req, res) => {
   const { email, phone } = req.body;
