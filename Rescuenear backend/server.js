@@ -18,6 +18,11 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/patients', patientRoutes);
 
+// Root route (for browser test)
+app.get('/', (req, res) => {
+  res.send('🚀 Rescuenear backend is running!');
+});
+
 // MongoDB connection
 const mongoURI = process.env.MONGO_URI || "mongodb://localhost:27017/rescuenear"; 
 // TEMPORARY fallback: local MongoDB if env var missing
@@ -30,6 +35,11 @@ mongoose.connect(mongoURI, {
 })
 .then(() => console.log("✅ MongoDB connected"))
 .catch((err) => console.error("❌ MongoDB connection error:", err));
+
+// 404 handler for unknown routes
+app.use((req, res) => {
+  res.status(404).send('⚠️ Route not found!');
+});
 
 // Port
 const PORT = process.env.PORT || 5000;
