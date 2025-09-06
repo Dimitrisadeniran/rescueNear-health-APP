@@ -1,5 +1,5 @@
 // controllersauthControllers.js
-const User = require('../modelsuser');            // ✅ corrected path
+const User = require('../modeluser');            // ✅ corrected path
 const sendEmailOTP = require('..UtilssendemailOTP'); // ✅ corrected path
 
 // Signup
