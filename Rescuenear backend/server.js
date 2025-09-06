@@ -15,20 +15,23 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// API routes (always put BEFORE frontend catch-all)
+// API routes (before frontend catch-all)
 app.use('/api/auth', authRoutes);
 app.use('/api/patients', patientRoutes);
 
-// MongoDB connection
-const mongoURI = process.env.MONGO_URI || "mongodb://localhost:27017/rescuenear";
-console.log("Mongo URI in use:", mongoURI);
+// MongoDB connection (GRACEFUL fallback)
+const mongoURI = process.env.MONGO_URI || null;
 
-mongoose.connect(mongoURI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
-.then(() => console.log("✅ MongoDB connected"))
-.catch((err) => console.error("❌ MongoDB connection error:", err));
+if (mongoURI) {
+    mongoose.connect(mongoURI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    })
+    .then(() => console.log("✅ MongoDB connected"))
+    .catch((err) => console.error("❌ MongoDB connection error:", err));
+} else {
+    console.warn("⚠️ MONGO_URI not set. MongoDB is not connected. Backend APIs that need DB will fail.");
+}
 
 // Serve frontend
 const frontendPath = path.join(__dirname, 'frontend');
@@ -38,7 +41,7 @@ app.use(express.static(frontendPath));
 app.get('*', (req, res) => {
     if (req.path.startsWith('/api')) {
         // Prevent API routes from being caught by frontend catch-all
-        return res.status(404).send({ message: 'API route not found' });
+        return res.status(404).send({ message: 'API route not found or MongoDB not connected' });
     }
     res.sendFile(path.join(frontendPath, 'index.html'));
 });
