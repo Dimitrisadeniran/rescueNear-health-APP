@@ -1,6 +1,6 @@
 // controllersauthControllers.js
-const User = require('../modeluser');              // ✅ Correct import
-const sendEmailOTP = require('../UtilssendemailOTP'); // ✅ Fixed path
+const User = require('./modeluser');
+const sendEmailOTP = require('./UtilssendemailOTP');
 
 // Signup
 exports.signup = async (req, res) => {
