@@ -250,7 +250,9 @@ async function handleSignup(e) {
   const phone = iti.getNumber(); // full E.164 format
 
   try {
-    const res = await fetch("/api/signup", {
+    // ✅ Use your Render backend URL here
+    const API_BASE = "https://rescuenear-backend.onrender.com"; 
+    const res = await fetch(`${API_BASE}/api/auth/signup`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, phone })
