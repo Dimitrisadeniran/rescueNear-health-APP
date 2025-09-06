@@ -19,13 +19,10 @@ app.use('/api/auth', authRoutes);
 app.use('/api/patients', patientRoutes);
 
 // MongoDB connection
-const mongoURI = process.env.MONGO_URI; // Uses env var from .env (local) or Render (production)
+const mongoURI = process.env.MONGO_URI || "mongodb://localhost:27017/rescuenear"; 
+// TEMPORARY fallback: local MongoDB if env var missing
 
-if (!mongoURI) {
-    throw new Error(
-      "Mongo URI is undefined! Make sure you set it in your .env (local) or Render Environment Variables (production)."
-    );
-}
+console.log("Mongo URI in use:", mongoURI); // Debug: prints the URI being used
 
 mongoose.connect(mongoURI, {
     useNewUrlParser: true,
@@ -37,5 +34,3 @@ mongoose.connect(mongoURI, {
 // Port
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
-
-
