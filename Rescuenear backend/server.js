@@ -21,21 +21,24 @@ app.use('/api/auth', authRoutes);
 app.use('/api/patients', patientRoutes);
 
 // --------------------
-// MongoDB connection (GRACEFUL fallback)
-const mongoURI = process.env.MONGO_URI || "mongodb://localhost:27017/rescuenear";
+// MongoDB connection (optional)
+const mongoURI = process.env.MONGO_URI || null;
 
-mongoose.connect(mongoURI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
-.then(() => console.log("✅ MongoDB connected"))
-.catch((err) => {
-    console.warn("⚠️ MongoDB connection failed, continuing without DB:", err.message);
-});
+if (mongoURI) {
+    mongoose.connect(mongoURI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    })
+    .then(() => console.log("✅ MongoDB connected"))
+    .catch((err) => console.error("❌ MongoDB connection error:", err));
+} else {
+    console.warn("⚠️ MONGO_URI not set. MongoDB is not connected. API routes that need DB will fail.");
+}
+
 
 // --------------------
 // Serve frontend
-const frontendPath = path.join(__dirname, 'frontend');
+const frontendPath = path.join(__dirname, 'Rescuenear frontend');
 app.use(express.static(frontendPath));
 
 // Catch-all route for non-API requests
