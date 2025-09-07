@@ -37,11 +37,10 @@ if (mongoURI) {
 const frontendPath = path.join(__dirname, 'frontend');
 app.use(express.static(frontendPath));
 
-// Catch-all route to serve frontend index.html for non-API routes
+// Catch-all route for non-API requests
 app.get('*', (req, res) => {
     if (req.path.startsWith('/api')) {
-        // Prevent API routes from being caught by frontend catch-all
-        return res.status(404).send({ message: 'API route not found or MongoDB not connected' });
+        return res.status(404).json({ message: 'API route not found or MongoDB not connected' });
     }
     res.sendFile(path.join(frontendPath, 'index.html'));
 });
