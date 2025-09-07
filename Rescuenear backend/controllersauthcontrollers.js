@@ -1,4 +1,4 @@
-// controllersauthControllers.js
+// controllersauthcontrollers.js
 const User = require('./modeluser');
 const sendEmailOTP = require('./UtilssendemailOTP');
 
