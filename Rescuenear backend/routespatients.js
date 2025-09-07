@@ -1,7 +1,15 @@
-// routes/patients.js
+// routespatients.js
 const express = require('express');
 const router = express.Router();
-const authController = require('./controllersauthcontrollers');
-router.post('/signup', authController.signup);
-// add login, verify OTP routes here module.exports = router;
+
+// Temporary patient controller inline
+const patientController = {
+    signup: (req, res) => res.json({ message: 'Patient signup successful!' }),
+    getAll: (req, res) => res.json({ patients: [] }),
+};
+
+router.post('/signup', patientController.signup);
+router.get('/', patientController.getAll);
+
+module.exports = router;
 
