@@ -4,7 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
-const morgan = require('morgan');
+
 
 // Import routes
 const authRoutes = require('./routes');          
