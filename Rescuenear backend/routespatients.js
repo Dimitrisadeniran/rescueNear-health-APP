@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 
-// Temporary patient controller inline
+// Temporary inline patient controller
 const patientController = {
     signup: (req, res) => res.json({ message: 'Patient signup successful!' }),
     getAll: (req, res) => res.json({ patients: [] }),
